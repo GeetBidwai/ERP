@@ -1,3 +1,4 @@
+import LogoutButton from "../../components/LogoutButton";
 import useAuth from "../../hooks/useAuth";
 
 export default function Dashboard() {
@@ -9,7 +10,16 @@ export default function Dashboard() {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h1>Dashboard</h1>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <h1>Dashboard</h1>
+        <LogoutButton />
+      </div>
 
       <h3>Current User:</h3>
 

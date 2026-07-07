@@ -1,15 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import useAuth from "../../hooks/useAuth";
 import api from "../../services/api";
 import "./Login.css";
 
 export default function Login() {
   const navigate = useNavigate();
+  const { user, loading } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!loading && user) {
+      navigate("/", { replace: true });
+    }
+  }, [loading, navigate, user]);
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -30,6 +38,14 @@ export default function Login() {
       .finally(() => {
         setIsSubmitting(false);
       });
+  }
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (user) {
+    return null;
   }
 
   return (
