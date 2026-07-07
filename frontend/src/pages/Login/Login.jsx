@@ -1,3 +1,83 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import api from "../../services/api";
+import "./Login.css";
+
 export default function Login() {
-  return <h1>Login Page</h1>;
+  const navigate = useNavigate();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    setError("");
+    setIsSubmitting(true);
+
+    api
+      .post("login/", { username, password })
+      .then(() => {
+        navigate("/", { replace: true });
+      })
+      .catch((requestError) => {
+        setError(
+          requestError.response?.data?.message ||
+            "Unable to login. Please try again."
+        );
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
+  }
+
+  return (
+    <main className="login-page">
+      <section className="login-card" aria-labelledby="login-title">
+        <div className="login-heading">
+          <p>Family ERP</p>
+          <h1 id="login-title">Welcome back</h1>
+        </div>
+
+        <form className="login-form" onSubmit={handleSubmit}>
+          <label htmlFor="username">Username</label>
+          <input
+            id="username"
+            name="username"
+            type="text"
+            value={username}
+            onChange={(event) => setUsername(event.target.value)}
+            autoComplete="username"
+            required
+          />
+
+          <label htmlFor="password">Password</label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            autoComplete="current-password"
+            required
+          />
+
+          {error && <p className="login-error">{error}</p>}
+
+          <button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Signing in..." : "Login"}
+          </button>
+        </form>
+
+        <a
+          className="forgot-password"
+          href="#"
+          onClick={(event) => event.preventDefault()}
+        >
+          Forgot Password?
+        </a>
+      </section>
+    </main>
+  );
 }
