@@ -9,7 +9,7 @@ export default function LogoutButton() {
 
   function handleLogout() {
     api
-      .post("/api/logout/")
+      .post("logout/")
       .then(() => {
         setUser(null);
         navigate("/login", { replace: true });

@@ -7,7 +7,7 @@ import "./Login.css";
 
 export default function Login() {
   const navigate = useNavigate();
-  const { user, loading } = useAuth();
+  const { user, loading, setUser } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -26,7 +26,13 @@ export default function Login() {
 
     api
       .post("login/", { username, password })
-      .then(() => {
+      .then(async () => {
+        const response = await api.get("session/");
+
+        if (response.data.authenticated) {
+          setUser(response.data);
+        }
+
         navigate("/", { replace: true });
       })
       .catch((requestError) => {
