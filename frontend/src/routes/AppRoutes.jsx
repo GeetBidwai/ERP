@@ -1,6 +1,5 @@
 import {
   BrowserRouter,
-  Navigate,
   Route,
   Routes,
 } from "react-router-dom";
@@ -8,7 +7,6 @@ import {
 import Login from "../pages/Login/Login";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import Business from "../pages/Business/Business";
-import api from "../services/api";
 import PrivateRoute from "./PrivateRoute";
 
 export default function AppRoutes() {
