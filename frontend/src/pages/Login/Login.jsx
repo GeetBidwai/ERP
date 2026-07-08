@@ -15,7 +15,7 @@ export default function Login() {
 
   useEffect(() => {
     if (!loading && user) {
-      navigate("/", { replace: true });
+      navigate("/select-business", { replace: true });
     }
   }, [loading, navigate, user]);
 
@@ -33,7 +33,7 @@ export default function Login() {
           setUser(response.data);
         }
 
-        navigate("/", { replace: true });
+        navigate("/select-business", { replace: true });
       })
       .catch((requestError) => {
         setError(

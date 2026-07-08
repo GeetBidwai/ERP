@@ -6,7 +6,7 @@ import {
 
 import Login from "../pages/Login/Login";
 import Dashboard from "../pages/Dashboard/Dashboard";
-import Business from "../pages/Business/Business";
+import BusinessSelection from "../pages/BusinessSelection/BusinessSelection";
 import PrivateRoute from "./PrivateRoute";
 
 export default function AppRoutes() {
@@ -14,8 +14,18 @@ export default function AppRoutes() {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
+
         <Route
           path="/"
+          element={
+            <PrivateRoute>
+              <BusinessSelection />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/dashboard"
           element={
             <PrivateRoute>
               <Dashboard />
@@ -24,10 +34,10 @@ export default function AppRoutes() {
         />
 
         <Route
-          path="/business"
+          path="/select-business"
           element={
             <PrivateRoute>
-              <Business />
+              <BusinessSelection />
             </PrivateRoute>
           }
         />
