@@ -1,0 +1,18 @@
+.grain-page {
+  width: 100%;
+}
+
+.grain-page__heading {
+  margin: 0 0 14px;
+  color: #f8fafc;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.grain-page__placeholder {
+  margin: 0;
+  color: #cbd5e1;
+  font-size: 1rem;
+  line-height: 1.6;
+}
