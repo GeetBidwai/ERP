@@ -11,10 +11,11 @@ import "./BusinessSelection.css";
 export default function BusinessSelection() {
   const navigate = useNavigate();
   const { setCurrentBusiness } = useBusiness();
-  
-  const handleSelectBusiness = (business) => {
-    setCurrentBusiness(business);
-    navigate("/", { replace: true });
+
+  const businessRoutes = {
+    grain: "/grain/dashboard",
+    scrap: "/scrap/dashboard",
+    centering: "/centering/dashboard",
   };
 
   const [businesses, setBusinesses] = useState([]);
@@ -57,7 +58,11 @@ export default function BusinessSelection() {
 
   function handleBusinessClick(business) {
     setCurrentBusiness(business);
-    navigate("/dashboard");
+
+    const businessType = business.business_type?.toLowerCase();
+    const nextRoute = businessRoutes[businessType] || "/dashboard";
+
+    navigate(nextRoute);
   }
 
   return (
