@@ -10,3 +10,29 @@ def business_list(request):
     businesses = Business.objects.all()
     serializer = BusinessSerializer(businesses, many=True)
     return Response(serializer.data)
+
+
+@api_view(["GET"])
+def seed_businesses(request):
+    if Business.objects.exists():
+        return Response({"message": "Businesses already exist."})
+
+    Business.objects.create(
+        name="Bidwai Grain Store",
+        business_type="grain",
+        description="Main Grain Business",
+    )
+
+    Business.objects.create(
+        name="Bidwai Scrap Merchant",
+        business_type="scrap",
+        description="Scrap Business",
+    )
+
+    Business.objects.create(
+        name="Bidwai Centering",
+        business_type="centering",
+        description="Centering Business",
+    )
+
+    return Response({"message": "Businesses created successfully!"})
