@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
 
-    'accounts',
+    'accounts.apps.AccountsConfig',
     'businesses',
     'inventory',
     'customers',
