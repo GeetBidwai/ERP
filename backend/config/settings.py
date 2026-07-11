@@ -14,9 +14,13 @@ import os
 import dj_database_url
 
 from pathlib import Path
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(BASE_DIR.parent / ".env", override=True)
+load_dotenv(BASE_DIR / ".env", override=True)
 
 
 # Quick-start development settings - unsuitable for production
@@ -89,10 +93,10 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+DATABASE_URL = os.getenv("DATABASE_URL") or f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
+
 DATABASES = {
-    "default": dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
-    )
+    "default": dj_database_url.parse(DATABASE_URL)
 }
 
 
