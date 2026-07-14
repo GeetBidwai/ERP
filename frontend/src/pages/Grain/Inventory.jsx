@@ -1,24 +1,12 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import "./Inventory.css";
+import api from "../../services/api";
+import useBusiness from "../../hooks/useBusiness";
 
 const productTypes = ["Gehu", "Bajra", "Jowar", "Rice", "Raire"];
 const bagSizeOptions = ["5", "10", "20", "25", "30", "40", "50", "Custom"];
 const statusOptions = ["Active", "Inactive"];
-
-const initialProduct = {
-  id: 1,
-  productName: "Wheat",
-  category: "Gehu",
-  bagSize: 30,
-  purchasePrice: 30,
-  sellingPrice: 37,
-  openingStock: 150,
-  remainingBags: 150,
-  totalWeight: 4500,
-  description: "Demo grain product",
-  status: "Active",
-};
 
 const initialForm = {
   productName: "",
@@ -66,15 +54,48 @@ function createFormDataFromProduct(product) {
   };
 }
 
+function normalizeProduct(product) {
+  return {
+    ...product,
+    productName: product.product_name ?? product.productName,
+    category: product.product_type ?? product.category,
+    bagSize: product.bag_size ?? product.bagSize,
+    purchasePrice: product.purchase_price ?? product.purchasePrice,
+    sellingPrice: product.selling_price ?? product.sellingPrice,
+    openingStock: product.opening_stock ?? product.openingStock,
+    remainingBags: product.remaining_bags ?? product.remainingBags,
+    totalWeight: product.total_weight ?? product.totalWeight,
+    description: product.description ?? "",
+    status: product.status,
+  };
+}
+
 function getPricePerBag(pricePerKg, bagSize) {
   return (Number(pricePerKg) || 0) * (Number(bagSize) || 0);
 }
 
 export default function GrainInventory() {
-  const [products, setProducts] = useState([initialProduct]);
+  const [products, setProducts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProductId, setEditingProductId] = useState(null);
   const [formData, setFormData] = useState(initialForm);
+
+  const { currentBusiness } = useBusiness();
+
+
+  async function fetchProducts() {
+    try {
+      const response = await api.get("inventory/");
+      setProducts(response.data.map(normalizeProduct));
+    } catch (error) {
+      console.error("Elrror fetching inventory:", error);
+    }
+  }
+
+  useEffect(() => {
+    Promise.resolve().then(fetchProducts);
+  }, []);
+
 
   const selectedBagSize = useMemo(() => {
     const size =
@@ -125,46 +146,61 @@ export default function GrainInventory() {
     }));
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
-    const openingStock = Number(formData.openingStock) || 0;
-    const bagSize = selectedBagSize;
+    if (!currentBusiness) {
+      alert("No business selected. Please select a business again.");
+      return;
+    }
 
-    const nextProductData = {
-      productName: formData.productName.trim(),
-      category: formData.category,
-      bagSize,
-      purchasePrice: Number(formData.purchasePrice) || 0,
-      sellingPrice: Number(formData.sellingPrice) || 0,
-      openingStock,
-      remainingBags: openingStock,
-      totalWeight: openingStock * bagSize,
+    const openingStock = Number(formData.openingStock) || 0;
+    const payload = {
+      business: currentBusiness.id,
+      product_name: formData.productName.trim(),
+      product_type: formData.category,
+      bag_size: Number(selectedBagSize),
+      purchase_price: Number(formData.purchasePrice) || 0,
+      selling_price: Number(formData.sellingPrice) || 0,
+      opening_stock: openingStock,
+      remaining_bags: openingStock,
       description: formData.description.trim(),
       status: formData.status,
     };
 
-    setProducts((currentProducts) => {
+    try {
       if (editingProductId) {
-        return currentProducts.map((product) =>
-          product.id === editingProductId
-            ? { ...product, ...nextProductData }
-            : product,
-        );
+        await api.put(`inventory/${editingProductId}/`, payload);
+      } else {
+        await api.post("inventory/", payload);
       }
 
-      return [{ id: Date.now(), ...nextProductData }, ...currentProducts];
-    });
-
-    closeModal();
+      await fetchProducts();
+      closeModal();
+    } catch (error) {
+      if (error.response?.status === 400) {
+        console.error("Inventory validation errors:", error.response.data);
+      } else {
+        console.error("Error saving inventory product:", error);
+      }
+    }
   }
 
-  function handleDeleteProduct(productId) {
-    setProducts((currentProducts) =>
-      currentProducts.filter((product) => product.id !== productId),
-    );
+  async function handleDeleteProduct(productId) {
+    try {
+      await api.delete(`inventory/${productId}/`);
+      await fetchProducts();
+      closeModal();
+    } catch (error) {
+      if (error.response?.status === 400) {
+        console.error("Inventory validation errors:", error.response.data);
+      } else {
+        console.error("Error deleting inventory product:", error);
+      }
+    }
   }
 
+  
   return (
     <section className="grain-inventory">
       <header className="grain-inventory__header">
@@ -272,13 +308,17 @@ export default function GrainInventory() {
       </div>
 
       {isModalOpen && (
-        <div className="grain-inventory__modal-backdrop" role="presentation">
+        <>
           <div
-            className="grain-inventory__modal"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="product-modal-title"
+            className="grain-inventory__modal-backdrop"
+            role="presentation"
           >
+            <div
+              className="grain-inventory__modal"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="product-modal-title"
+            >
             <div className="grain-inventory__modal-header">
               <div>
                 <h2 id="product-modal-title">
@@ -464,6 +504,7 @@ export default function GrainInventory() {
             </form>
           </div>
         </div>
+      </>
       )}
     </section>
   );
