@@ -24,4 +24,8 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+export async function initializeCSRF() {
+  await api.get("csrf/");
+}
+
 export default api;

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import useAuth from "../../hooks/useAuth";
-import api from "../../services/api";
+import api, { initializeCSRF } from "../../services/api";
 import "./Login.css";
 
 export default function Login() {
@@ -19,32 +19,40 @@ export default function Login() {
     }
   }, [loading, navigate, user]);
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
+
     setError("");
     setIsSubmitting(true);
 
-    api
-      .post("login/", { username, password })
-      .then(async () => {
-        const response = await api.get("session/");
+    try {
+      // Get CSRF cookie first
+      await initializeCSRF();
 
-        if (response.data.authenticated) {
-          setUser(response.data);
-        }
-
-        navigate("/select-business", { replace: true });
-      })
-      .catch((requestError) => {
-        setError(
-          requestError.response?.data?.message ||
-            "Unable to login. Please try again."
-        );
-      })
-      .finally(() => {
-        setIsSubmitting(false);
+      // Login
+      await api.post("login/", {
+        username,
+        password,
       });
-  }
+
+      // Verify session
+      const response = await api.get("session/");
+
+      if (response.data.authenticated) {
+        setUser(response.data);
+      }
+
+      navigate("/select-business", { replace: true });
+    } catch (requestError) {
+      setError(
+        requestError.response?.data?.message ||
+          "Unable to login. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  }  
+
 
   if (loading) {
     return <p>Loading...</p>;
