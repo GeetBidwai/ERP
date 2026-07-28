@@ -9,4 +9,5 @@ urlpatterns = [
 
     # Inventory API
     path("api/inventory/", include("inventory.urls")),
+    path("api/sales/", include("sales.urls")),
 ]

@@ -60,6 +60,23 @@
   overflow: hidden;
 }
 
+.grain-inventory__loading,
+.grain-inventory__message {
+  margin: 0;
+  padding: 16px 20px;
+  border-radius: 12px;
+}
+
+.grain-inventory__loading {
+  color: #cbd5e1;
+}
+
+.grain-inventory__message {
+  color: #fecaca;
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  background: rgba(127, 29, 29, 0.3);
+}
+
 .grain-inventory__table-wrap {
   width: 100%;
   max-width: 100%;

@@ -38,7 +38,7 @@ export default function BusinessSelection() {
         if (isMounted) {
           setBusinesses(nextBusinesses);
         }
-      } catch (requestError) {
+      } catch {
         if (isMounted) {
           setError("Unable to load businesses. Please try again.");
         }
