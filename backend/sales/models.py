@@ -16,6 +16,8 @@ class Sale(models.Model):
         on_delete=models.CASCADE,
         related_name="sales",
     )
+    invoice_number = models.CharField(max_length=20, unique=True, editable=False)
+    customer_name = models.CharField(max_length=200, default="Walk-in Customer")
     sale_date = models.DateField(auto_now_add=True)
     sale_time = models.TimeField(auto_now_add=True)
     payment_mode = models.CharField(max_length=20, choices=PAYMENT_MODE_CHOICES)

@@ -11,6 +11,21 @@
 .grain-sales__empty-card p { max-width: 340px; line-height: 1.5; }
 .grain-sales__empty-icon { display: grid; width: 48px; height: 48px; place-items: center; border-radius: 50%; color: #bae6fd; font-size: 1.4rem; font-weight: 800; background: rgba(14, 116, 144, .34); }
 .grain-sales__empty-card button { min-height: 44px; padding: 10px 16px; color: #bae6fd; border: 1px solid rgba(56, 189, 248, .38); background: rgba(8, 47, 73, .42); }
+.grain-sales__message { margin: 0; padding: 14px 16px; border: 1px solid; border-radius: 12px; }
+.grain-sales__message--success { color: #bbf7d0; border-color: rgba(74, 222, 128, .35); background: rgba(20, 83, 45, .35); }
+.grain-sales__message--error { color: #fecaca; border-color: rgba(248, 113, 113, .35); background: rgba(127, 29, 29, .35); }
+.grain-sales__sales-list { display: grid; gap: 10px; }
+.grain-sales__history-filters { display: grid; grid-template-columns: 1fr; gap: 10px; }
+.grain-sales__sale { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 16px; padding: 16px; border: 1px solid rgba(148, 163, 184, .2); border-radius: 14px; color: #f8fafc; text-align: left; background: rgba(15, 23, 42, .68); cursor: pointer; }
+.grain-sales__sale:hover { border-color: rgba(56, 189, 248, .48); background: rgba(8, 47, 73, .32); }
+.grain-sales__sale div { display: grid; gap: 4px; }
+.grain-sales__sale span { color: #94a3b8; font-size: .85rem; }
+.grain-sales__details-loading { margin: 0; padding: 28px; color: #cbd5e1; text-align: center; }
+.grain-sales__details-summary { display: grid; grid-template-columns: 1fr; gap: 12px; margin: 0; }
+.grain-sales__details-summary div { padding: 12px; border-radius: 10px; background: rgba(15, 23, 42, .68); }
+.grain-sales__details-summary dt { color: #94a3b8; font-size: .8rem; }
+.grain-sales__details-summary dd { margin: 4px 0 0; color: #f8fafc; font-weight: 700; }
+.grain-sales__details-items { display: grid; gap: 10px; }
 .grain-sales__backdrop { position: fixed; inset: 0; z-index: 20; display: grid; place-items: end center; padding: 12px; background: rgba(2, 6, 23, .74); box-sizing: border-box; }
 .grain-sales__modal { width: min(100%, 760px); max-height: calc(100svh - 24px); overflow: auto; border: 1px solid rgba(148, 163, 184, .22); border-radius: 18px; color: #e2e8f0; background: #0f172a; box-shadow: 0 24px 70px rgba(0, 0, 0, .38); }
 .grain-sales__modal-header, .grain-sales__modal-footer { display: flex; gap: 16px; align-items: center; justify-content: space-between; padding: 20px; }
@@ -45,5 +60,5 @@
 .grain-sales__form-actions button { min-height: 48px; padding: 10px 16px; color: #cbd5e1; border: 1px solid rgba(148, 163, 184, .3); background: #1e293b; }
 .grain-sales__form-actions button:last-child { color: #08111f; border-color: transparent; background: #38bdf8; }
 .grain-sales__form-actions button:disabled { cursor: not-allowed; opacity: .5; }
-@media (min-width: 640px) { .grain-sales__header { flex-direction: row; align-items: center; justify-content: space-between; }.grain-sales__new-button { min-width: 140px; }.grain-sales__details-grid { grid-template-columns: 1fr 1fr; }.grain-sales__product-controls { grid-template-columns: minmax(0, 1fr) 130px 110px auto; align-items: end; }.grain-sales__modal-footer { flex-direction: row; align-items: center; }.grain-sales__form-actions { width: auto; min-width: 230px; } }
+@media (min-width: 640px) { .grain-sales__header { flex-direction: row; align-items: center; justify-content: space-between; }.grain-sales__new-button { min-width: 140px; }.grain-sales__history-filters { grid-template-columns: minmax(0, 1fr) 170px 140px; }.grain-sales__details-grid { grid-template-columns: 1fr 1fr; }.grain-sales__details-summary { grid-template-columns: repeat(3, 1fr); }.grain-sales__product-controls { grid-template-columns: minmax(0, 1fr) 130px 110px auto; align-items: end; }.grain-sales__modal-footer { flex-direction: row; align-items: center; }.grain-sales__form-actions { width: auto; min-width: 230px; } }
 @media (min-width: 768px) { .grain-sales__backdrop { place-items: center; padding: 24px; }.grain-sales__modal { max-height: calc(100svh - 48px); }.grain-sales__modal-header, .grain-sales__modal-footer, .grain-sales__modal-body { padding-left: 28px; padding-right: 28px; } }
