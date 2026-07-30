@@ -1,0 +1,19 @@
+.supplier-search {
+  width: min(100%, 420px);
+  padding: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 8px;
+  box-sizing: border-box;
+  color: #f8fafc;
+  background: #0f1117;
+  font: inherit;
+}
+
+.supplier-search:focus {
+  outline: 2px solid rgba(56, 189, 248, 0.42);
+  border-color: #38bdf8;
+}
+
+.supplier-table {
+  min-width: 1180px;
+}

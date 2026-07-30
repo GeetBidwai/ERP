@@ -1,0 +1,52 @@
+.grain-dashboard { display: grid; gap: 24px; width: 100%; }
+.grain-dashboard__header h1, .dashboard-panel h2 { margin: 0; color: var(--text-h); font-weight: 500; }
+.grain-dashboard__header h1 { font-size: 1.75rem; }
+.grain-dashboard__header p { margin: 8px 0 0; color: var(--text); }
+
+.dashboard-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+
+.dashboard-card {
+  display: grid; gap: 6px; padding: 16px;
+  border-radius: 14px;
+  background: var(--surface-dark);
+  color: var(--text-on-dark);
+}
+.dashboard-card span { color: #b4b2a9; font-size: 12px; }
+.dashboard-card strong { color: var(--text-on-dark); font-size: 1.3rem; font-weight: 500; }
+
+.dashboard-panel {
+  border: 0.5px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  display: grid; gap: 14px; padding: 18px;
+}
+.dashboard-panel h2 { font-size: 1rem; }
+
+.dashboard-empty, .dashboard-list span { color: var(--text); }
+.dashboard-empty { margin: 0; min-height: 70px; display: grid; place-items: center; text-align: center; }
+
+.dashboard-list { display: grid; gap: 8px; }
+.dashboard-list article {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 12px; border-radius: 10px; background: var(--accent-bg);
+}
+.dashboard-list strong { color: var(--accent-text); }
+
+.dashboard-grid { display: grid; gap: 14px; }
+
+.sales-chart { display: flex; height: 160px; align-items: end; justify-content: space-between; gap: 6px; }
+.sales-chart__column { display: grid; height: 100%; flex: 1; align-items: end; gap: 6px; }
+.sales-chart__column span { display: block; min-height: 4px; border-radius: 6px 6px 0 0; background: var(--accent); }
+.sales-chart__column small { color: var(--text); text-align: center; font-size: 11px; }
+
+.grain-dashboard__message, .grain-dashboard__loading {
+  margin: 0; padding: 14px; border-radius: 10px; color: var(--text); background: var(--surface);
+}
+.grain-dashboard__message { color: #791f1f; border: 0.5px solid #f09595; background: #fcebeb; }
+
+@media (min-width: 760px) {
+  .dashboard-cards { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .dashboard-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dashboard-panel:first-child { grid-column: 1 / -1; }
+}
