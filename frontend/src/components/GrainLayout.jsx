@@ -1,16 +1,15 @@
 import { NavLink } from "react-router-dom";
-
 import LogoutButton from "./LogoutButton";
 import "./GrainLayout.css";
 
 const grainNavItems = [
-  { label: "Dashboard", path: "/grain/dashboard" },
-  { label: "Inventory", path: "/grain/inventory" },
-  { label: "Sales", path: "/grain/sales" },
-  { label: "Customers", path: "/grain/customers" },
-  { label: "Suppliers", path: "/grain/suppliers" },
-  { label: "Finance", path: "/grain/finance" },
-  { label: "Reports", path: "/grain/reports" },
+  { label: "Dashboard", path: "/grain/dashboard", icon: "home" },
+  { label: "Inventory", path: "/grain/inventory", icon: "box" },
+  { label: "Sales", path: "/grain/sales", icon: "receipt" },
+  { label: "Customers", path: "/grain/customers", icon: "users" },
+  { label: "Suppliers", path: "/grain/suppliers", icon: "truck" },
+  { label: "Finance", path: "/grain/finance", icon: "wallet" },
+  { label: "Reports", path: "/grain/reports", icon: "chart" },
 ];
 
 export default function GrainLayout({ children }) {
@@ -18,7 +17,6 @@ export default function GrainLayout({ children }) {
     <div className="grain-layout">
       <aside className="grain-layout__sidebar">
         <h2 className="grain-layout__title">Family ERP</h2>
-
         <nav className="grain-layout__nav" aria-label="Grain module">
           {grainNavItems.map((item) => (
             <NavLink
@@ -34,13 +32,33 @@ export default function GrainLayout({ children }) {
             </NavLink>
           ))}
         </nav>
-
         <div className="grain-layout__logout">
           <LogoutButton />
         </div>
       </aside>
 
+      <header className="grain-layout__mobile-header">
+        <span className="grain-layout__title">Family ERP</span>
+        <LogoutButton />
+      </header>
+
       <main className="grain-layout__main">{children}</main>
+
+      <nav className="grain-layout__tabbar" aria-label="Grain module">
+        {grainNavItems.slice(0, 5).map((item) => (
+          <NavLink
+            key={item.path}
+            to={item.path}
+            className={({ isActive }) =>
+              isActive
+                ? "grain-layout__tab grain-layout__tab--active"
+                : "grain-layout__tab"
+            }
+          >
+            <span className="grain-layout__tab-label">{item.label}</span>
+          </NavLink>
+        ))}
+      </nav>
     </div>
   );
 }
