@@ -1,17 +1,17 @@
 .supplier-search {
   width: min(100%, 420px);
   padding: 12px;
-  border: 1px solid rgba(148, 163, 184, 0.28);
+  border: 0.5px solid var(--border);
   border-radius: 8px;
   box-sizing: border-box;
-  color: #f8fafc;
-  background: #0f1117;
+  color: var(--text-h);
+  background: var(--bg);
   font: inherit;
 }
 
 .supplier-search:focus {
-  outline: 2px solid rgba(56, 189, 248, 0.42);
-  border-color: #38bdf8;
+  outline: 2px solid rgba(99, 153, 34, 0.4);
+  border-color: var(--accent);
 }
 
 .supplier-table {
