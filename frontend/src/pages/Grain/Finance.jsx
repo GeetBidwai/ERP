@@ -1,10 +1,11 @@
-import "./GrainPage.css";
+import ComingSoon from "../../components/ComingSoon";
 
 export default function GrainFinance() {
   return (
-    <section className="grain-page">
-      <h1 className="grain-page__heading">Finance</h1>
-      <p className="grain-page__placeholder">This is the Finance page.</p>
-    </section>
+    <ComingSoon
+      title="Finance"
+      description="Financial accounting and expense tracking are coming soon."
+      estimatedModule="a future update"
+    />
   );
 }

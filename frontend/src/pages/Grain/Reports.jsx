@@ -1,10 +1,11 @@
-import "./GrainPage.css";
+import ComingSoon from "../../components/ComingSoon";
 
 export default function GrainReports() {
   return (
-    <section className="grain-page">
-      <h1 className="grain-page__heading">Reports</h1>
-      <p className="grain-page__placeholder">This is the Reports page.</p>
-    </section>
+    <ComingSoon
+      title="Reports"
+      description="Business reports and analytics are under development."
+      estimatedModule="a future update"
+    />
   );
 }
