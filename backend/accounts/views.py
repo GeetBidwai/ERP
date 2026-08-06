@@ -7,7 +7,8 @@ from rest_framework.decorators import (
 )
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth.models import User
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
@@ -32,6 +33,44 @@ def login_view(request):
             "success": True,
             "username": user.get_username(),
             "first_name": user.first_name,
+        }
+    )
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def jwt_login_view(request):
+    username = request.data.get("username")
+    password = request.data.get("password")
+
+    user = authenticate(
+        request,
+        username=username,
+        password=password,
+    )
+
+    if user is None:
+        return Response(
+            {
+                "success": False,
+                "message": "Invalid username or password.",
+            },
+            status=status.HTTP_401_UNAUTHORIZED,
+        )
+
+    refresh = RefreshToken.for_user(user)
+
+    return Response(
+        {
+            "success": True,
+            "access": str(refresh.access_token),
+            "refresh": str(refresh),
+            "user": {
+                "id": user.id,
+                "username": user.username,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "email": user.email,
+            },
         }
     )
 
