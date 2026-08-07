@@ -1,33 +1,73 @@
 import axios from "axios";
-
-function getCookie(name) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) {
-    return parts.pop().split(";").shift();
-  }
-  return "";
-}
+import {
+  getAccessToken,
+  getRefreshToken,
+  setTokens,
+  clearTokens,
+} from "../services/tokenService";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  withCredentials: true,
 });
 
-api.interceptors.request.use((config) => {
-  const csrfToken = getCookie("csrftoken");
+api.interceptors.request.use(
+  (config) => {
+    const token = getAccessToken();
 
-  console.log("CSRF TOKEN VALUE:", `"${csrfToken}"`);
+    console.log("ACCESS TOKEN:", token);
 
-  if (csrfToken) {
-    config.headers["X-CSRFToken"] = csrfToken;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+      console.log("Authorization Header Added");
+    } else {
+      console.log("No token found");
+    }
+
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+api.interceptors.response.use(
+  (response) => response,
+
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry
+    ) {
+      originalRequest._retry = true;
+
+      try {
+        const refresh = getRefreshToken();
+
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}token/refresh/`,
+          {
+            refresh,
+          }
+        );
+
+        const access = response.data.access;
+
+        setTokens(access, refresh);
+
+        originalRequest.headers.Authorization = `Bearer ${access}`;
+
+        return api(originalRequest);
+      } catch (refreshError) {
+        clearTokens();
+
+        window.location.href = "/login";
+
+        return Promise.reject(refreshError);
+      }
+    }
+
+    return Promise.reject(error);
   }
-
-  return config;
-});
-
-export async function initializeCSRF() {
-  await api.get("csrf/");
-}
+);
 
 export default api;

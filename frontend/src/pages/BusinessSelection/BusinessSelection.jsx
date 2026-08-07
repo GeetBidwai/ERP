@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import useBusiness from "../../hooks/useBusiness";
 
 import BusinessCard from "../../components/BusinessCard";
-import api from "../../services/api";
+import api from "../../api/api";
 import "./BusinessSelection.css";
 
 export default function BusinessSelection() {

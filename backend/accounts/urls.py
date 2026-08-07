@@ -7,6 +7,7 @@ from .views import (
     logout_view,
     session_view,
     jwt_login_view,
+    me_view,
 )
 
 urlpatterns = [
@@ -14,5 +15,6 @@ urlpatterns = [
     path("jwt/login/", jwt_login_view),
     path("logout/", logout_view),
     path("session/", session_view),
+    path("me/", me_view),   
     path("csrf/", csrf),
 ]
