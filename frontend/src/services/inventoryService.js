@@ -1,4 +1,4 @@
-import api from "./api";
+import api from "../api/api";
 
 export async function getInventory(businessId) {
   const response = await api.get("inventory/", {

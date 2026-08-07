@@ -1,22 +1,20 @@
 import { useNavigate } from "react-router-dom";
 
 import useAuth from "../hooks/useAuth";
-import api from "../services/api";
+import { clearTokens } from "../services/tokenService";
 
 export default function LogoutButton() {
   const navigate = useNavigate();
   const { setUser } = useAuth();
 
   function handleLogout() {
-    api
-      .post("logout/")
-      .then(() => {
-        setUser(null);
-        navigate("/login", { replace: true });
-      })
-      .catch((error) => {
-        console.error("Logout failed:", error);
-      });
+    clearTokens();
+
+    setUser(null);
+
+    navigate("/login", {
+      replace: true,
+    });
   }
 
   return (

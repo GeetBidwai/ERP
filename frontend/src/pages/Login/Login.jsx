@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import useAuth from "../../hooks/useAuth";
-import api, { initializeCSRF } from "../../services/api";
+import api from "../../api/api";
+import { setTokens } from "../../services/tokenService";
 import "./Login.css";
 
 export default function Login() {
@@ -26,23 +27,20 @@ export default function Login() {
     setIsSubmitting(true);
 
     try {
-      // Get CSRF cookie first
-      await initializeCSRF();
-
-      // Login
-      await api.post("login/", {
+      const response = await api.post("jwt/login/", {
         username,
         password,
       });
 
-      // Verify session
-      const response = await api.get("session/");
+      const { access, refresh, user } = response.data;
 
-      if (response.data.authenticated) {
-        setUser(response.data);
-      }
+      setTokens(access, refresh);
 
-      navigate("/select-business", { replace: true });
+      setUser(user);
+
+      navigate("/select-business", {
+        replace: true,
+      });
     } catch (requestError) {
       setError(
         requestError.response?.data?.message ||

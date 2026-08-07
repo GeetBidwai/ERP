@@ -1,40 +1,54 @@
 import { useEffect, useState } from "react";
 import AuthContext from "./AuthContext";
-import api from "../services/api";
+
+import api from "../api/api";
+import {
+  getAccessToken,
+  clearTokens,
+} from "../services/tokenService";
 
 export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api
-      .get("session/")
-      .then((response) => {
-        console.log("Session Response:", response.data);
+    async function restoreUser() {
+      const token = getAccessToken();
 
-        if (response.data.authenticated) {
-          setUser(response.data);
-        } else {
-          setUser(null);
-        }
-      })
-      .catch((error) => {
-        console.error("Session Error:", error);
-        setUser(null);
-      })
-      .finally(() => {
+      if (!token) {
         setLoading(false);
-      });
+        return;
+      }
+
+      try {
+        const response = await api.get("me/");
+
+        setUser(response.data);
+      } catch (error) {
+        clearTokens();
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    restoreUser();
   }, []);
 
-  const value = {
-    user,
-    setUser,
-    loading,
-  };
+  function logout() {
+    clearTokens();
+    setUser(null);
+  }
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider
+      value={{
+        user,
+        setUser,
+        loading,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

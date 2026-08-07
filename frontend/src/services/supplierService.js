@@ -1,4 +1,4 @@
-import api from "./api";
+import api from "../api/api";
 
 export async function getSuppliers(businessId) {
   const response = await api.get("suppliers/", { params: { business: businessId } });
