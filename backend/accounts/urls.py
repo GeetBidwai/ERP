@@ -11,10 +11,13 @@ from .views import (
 )
 
 urlpatterns = [
+    # Legacy Session Authentication (temporary)
     path("login/", login_view),
-    path("jwt/login/", jwt_login_view),
     path("logout/", logout_view),
     path("session/", session_view),
-    path("me/", me_view),   
     path("csrf/", csrf),
+
+    # JWT Authentication
+    path("jwt/login/", jwt_login_view),
+    path("me/", me_view),
 ]

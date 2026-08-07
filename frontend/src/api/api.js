@@ -14,13 +14,8 @@ api.interceptors.request.use(
   (config) => {
     const token = getAccessToken();
 
-    console.log("ACCESS TOKEN:", token);
-
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-      console.log("Authorization Header Added");
-    } else {
-      console.log("No token found");
     }
 
     return config;
