@@ -29,9 +29,13 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    const isLoginRequest =
+      originalRequest.url.includes("jwt/login");
+
     if (
       error.response?.status === 401 &&
-      !originalRequest._retry
+      !originalRequest._retry &&
+      !isLoginRequest
     ) {
       originalRequest._retry = true;
 
