@@ -16,6 +16,10 @@ import GrainCustomers from "../pages/Grain/Customers";
 import GrainSuppliers from "../pages/Grain/Suppliers";
 import GrainFinance from "../pages/Grain/Finance";
 import GrainReports from "../pages/Grain/Reports";
+import PublicHome from "../pages/public/PublicHome";
+import PublicAbout from "../pages/public/PublicAbout";
+import PublicProducts from "../pages/public/PublicProducts";
+import PublicContact from "../pages/public/PublicContact";
 
 export default function AppRoutes() {
   return (
@@ -23,14 +27,10 @@ export default function AppRoutes() {
       <Routes>
         <Route path="/login" element={<Login />} />
 
-        <Route
-          path="/"
-          element={
-            <PrivateRoute>
-              <BusinessSelection />
-            </PrivateRoute>
-          }
-        />
+        <Route path="/" element={<PublicHome />} />
+        <Route path="/about" element={<PublicAbout />} />
+        <Route path="/products" element={<PublicProducts />} />
+        <Route path="/contact" element={<PublicContact />} />
 
         <Route
           path="/dashboard"
