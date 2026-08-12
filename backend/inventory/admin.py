@@ -20,4 +20,4 @@ class InventoryAdmin(admin.ModelAdmin):
 
     search_fields = (
         "product_name",
-    )
+    )   

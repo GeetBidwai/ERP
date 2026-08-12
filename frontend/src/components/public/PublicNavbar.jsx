@@ -8,9 +8,9 @@ export default function PublicNavbar() {
 
   return (
     <header className="public-navbar">
-      <Link className="public-brand" to="/" onClick={() => setIsOpen(false)}>
+      <Link className="public-brand" to="/sai-dhanya" onClick={() => setIsOpen(false)}>
         <span className="public-brand-mark" aria-hidden="true">
-          FG
+          SD
         </span>
         <span>{businessName}</span>
       </Link>
@@ -20,6 +20,7 @@ export default function PublicNavbar() {
         type="button"
         aria-label="Toggle navigation"
         aria-expanded={isOpen}
+        aria-controls="public-navigation"
         onClick={() => setIsOpen((current) => !current)}
       >
         <span />
@@ -27,7 +28,10 @@ export default function PublicNavbar() {
         <span />
       </button>
 
-      <nav className={isOpen ? "public-nav public-nav-open" : "public-nav"}>
+      <nav
+        id="public-navigation"
+        className={isOpen ? "public-nav public-nav-open" : "public-nav"}
+      >
         {publicNavLinks.map((link) => (
           <NavLink
             key={link.to}

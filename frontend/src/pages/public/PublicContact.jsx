@@ -17,10 +17,10 @@ export default function PublicContact() {
       <main>
         <section className="public-page-hero public-container">
           <p className="public-eyebrow">Contact us</p>
-          <h1>Reach the store directly.</h1>
+          <h1>Sai Dhanya Bhandar</h1>
           <p>
-            These are placeholder contact details. Replace them in one place
-            when the final phone, WhatsApp, address, and hours are confirmed.
+            Get in touch or visit us at our local grain shop in Bhingar,
+            Ahilyanagar.
           </p>
         </section>
 
@@ -34,22 +34,16 @@ export default function PublicContact() {
             ))}
           </div>
 
-          <div className="public-map-placeholder">
-            <span>Google Maps Placeholder</span>
-            <p>Add an embedded map here once the public address is finalized.</p>
+          <div className="public-contact-actions">
+            <a className="public-button public-button-primary" href={publicContact.phoneHref}>
+              Call Us
+            </a>
+            <a className="public-button public-button-light" href={publicContact.whatsappHref}>
+              WhatsApp Us
+            </a>
           </div>
         </section>
 
-        <section className="public-contact-cta public-container">
-          <div>
-            <p className="public-eyebrow">Quick note</p>
-            <h2>Call or message before visiting.</h2>
-            <p>
-              Placeholder: Add any customer-facing note about availability,
-              ordering, or shop visit timing.
-            </p>
-          </div>
-        </section>
       </main>
       <PublicFooter />
     </div>

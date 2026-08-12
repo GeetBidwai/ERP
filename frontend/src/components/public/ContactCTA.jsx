@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 
 export default function ContactCTA({
-  title = "Ready to get in touch?",
-  text = "Call, message, or visit using the placeholder details below.",
+  title = "Need to get in touch?",
+  text = "Have a question? Get in touch with Sai Dhanya Bhandar.",
 }) {
   return (
     <section className="public-contact-cta public-container">
@@ -11,9 +11,11 @@ export default function ContactCTA({
         <h2>{title}</h2>
         <p>{text}</p>
       </div>
-      <Link className="public-button public-button-primary" to="/contact">
-        Contact Us
-      </Link>
+      <div className="public-cta-actions">
+        <Link className="public-button public-button-primary" to="/sai-dhanya/contact">
+          Contact Us
+        </Link>
+      </div>
     </section>
   );
 }

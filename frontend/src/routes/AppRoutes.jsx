@@ -1,5 +1,7 @@
 import {
   BrowserRouter,
+  Navigate,
+  Outlet,
   Route,
   Routes,
 } from "react-router-dom";
@@ -20,112 +22,127 @@ import PublicHome from "../pages/public/PublicHome";
 import PublicAbout from "../pages/public/PublicAbout";
 import PublicProducts from "../pages/public/PublicProducts";
 import PublicContact from "../pages/public/PublicContact";
+import AuthProvider from "../context/AuthProvider";
+import BusinessProvider from "../context/BusinessProvider";
+
+function ErpProviders() {
+  return (
+    <AuthProvider>
+      <BusinessProvider>
+        <Outlet />
+      </BusinessProvider>
+    </AuthProvider>
+  );
+}
 
 export default function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Navigate to="/sai-dhanya" replace />} />
+        <Route path="/sai-dhanya" element={<PublicHome />} />
+        <Route path="/sai-dhanya/about" element={<PublicAbout />} />
+        <Route path="/sai-dhanya/products" element={<PublicProducts />} />
+        <Route path="/sai-dhanya/contact" element={<PublicContact />} />
 
-        <Route path="/" element={<PublicHome />} />
-        <Route path="/about" element={<PublicAbout />} />
-        <Route path="/products" element={<PublicProducts />} />
-        <Route path="/contact" element={<PublicContact />} />
+        <Route element={<ErpProviders />}>
+          <Route path="/login" element={<Login />} />
 
-        <Route
-          path="/dashboard"
-          element={
-            <PrivateRoute>
-              <Dashboard />
-            </PrivateRoute>
-          }
-        />
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
 
-        <Route
-          path="/select-business"
-          element={
-            <PrivateRoute>
-              <BusinessSelection />
-            </PrivateRoute>
-          }
-        />
+          <Route
+            path="/select-business"
+            element={
+              <PrivateRoute>
+                <BusinessSelection />
+              </PrivateRoute>
+            }
+          />
 
-        <Route
-          path="/grain/dashboard"
-          element={
-            <PrivateRoute>
-              <GrainLayout>
-                <GrainDashboard />
-              </GrainLayout>
-            </PrivateRoute>
-          }
-        />
+          <Route
+            path="/grain/dashboard"
+            element={
+              <PrivateRoute>
+                <GrainLayout>
+                  <GrainDashboard />
+                </GrainLayout>
+              </PrivateRoute>
+            }
+          />
 
-        <Route
-          path="/grain/inventory"
-          element={
-            <PrivateRoute>
-              <GrainLayout>
-                <GrainInventory />
-              </GrainLayout>
-            </PrivateRoute>
-          }
-        />
+          <Route
+            path="/grain/inventory"
+            element={
+              <PrivateRoute>
+                <GrainLayout>
+                  <GrainInventory />
+                </GrainLayout>
+              </PrivateRoute>
+            }
+          />
 
-        <Route
-          path="/grain/sales"
-          element={
-            <PrivateRoute>
-              <GrainLayout>
-                <GrainSales />
-              </GrainLayout>
-            </PrivateRoute>
-          }
-        />
+          <Route
+            path="/grain/sales"
+            element={
+              <PrivateRoute>
+                <GrainLayout>
+                  <GrainSales />
+                </GrainLayout>
+              </PrivateRoute>
+            }
+          />
 
-        <Route
-          path="/grain/customers"
-          element={
-            <PrivateRoute>
-              <GrainLayout>
-                <GrainCustomers />
-              </GrainLayout>
-            </PrivateRoute>
-          }
-        />
+          <Route
+            path="/grain/customers"
+            element={
+              <PrivateRoute>
+                <GrainLayout>
+                  <GrainCustomers />
+                </GrainLayout>
+              </PrivateRoute>
+            }
+          />
 
-        <Route
-          path="/grain/suppliers"
-          element={
-            <PrivateRoute>
-              <GrainLayout>
-                <GrainSuppliers />
-              </GrainLayout>
-            </PrivateRoute>
-          }
-        />
+          <Route
+            path="/grain/suppliers"
+            element={
+              <PrivateRoute>
+                <GrainLayout>
+                  <GrainSuppliers />
+                </GrainLayout>
+              </PrivateRoute>
+            }
+          />
 
-        <Route
-          path="/grain/finance"
-          element={
-            <PrivateRoute>
-              <GrainLayout>
-                <GrainFinance />
-              </GrainLayout>
-            </PrivateRoute>
-          }
-        />
+          <Route
+            path="/grain/finance"
+            element={
+              <PrivateRoute>
+                <GrainLayout>
+                  <GrainFinance />
+                </GrainLayout>
+              </PrivateRoute>
+            }
+          />
 
-        <Route
-          path="/grain/reports"
-          element={
-            <PrivateRoute>
-              <GrainLayout>
-                <GrainReports />
-              </GrainLayout>
-            </PrivateRoute>
-          }
-        />
+          <Route
+            path="/grain/reports"
+            element={
+              <PrivateRoute>
+                <GrainLayout>
+                  <GrainReports />
+                </GrainLayout>
+              </PrivateRoute>
+            }
+          />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

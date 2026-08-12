@@ -12,12 +12,15 @@ export default function PublicProducts() {
         <section className="public-page-hero public-products-placeholder public-container">
           <p className="public-eyebrow">Products</p>
           <h1>Our Products</h1>
-          <p>Our product catalogue is coming soon.</p>
+          <p>
+            Explore the grains available at Sai Dhanya Bhandar. Our public
+            product list will be added in the future.
+          </p>
           <div className="public-hero-actions">
-            <Link className="public-button public-button-primary" to="/contact">
+            <Link className="public-button public-button-primary" to="/sai-dhanya/contact">
               Contact Us
             </Link>
-            <Link className="public-button public-button-secondary" to="/">
+            <Link className="public-button public-button-secondary" to="/sai-dhanya">
               Back to Home
             </Link>
           </div>

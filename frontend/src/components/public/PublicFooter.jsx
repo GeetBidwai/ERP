@@ -7,13 +7,12 @@ export default function PublicFooter() {
     <footer className="public-footer">
       <div className="public-footer-grid public-container">
         <div>
-          <Link className="public-footer-brand" to="/">
+          <Link className="public-footer-brand" to="/sai-dhanya">
             {businessName}
           </Link>
-          <p>
-            A public website for a family-run grain business. Replace this
-            placeholder with your real business introduction when ready.
-          </p>
+          <p>Alamgir Road, Bhingar, Ahilyanagar</p>
+          <p>{publicContact.hours}</p>
+          <p>Phone: {publicContact.phone}</p>
         </div>
 
         <div>
@@ -24,13 +23,16 @@ export default function PublicFooter() {
                 {link.label}
               </Link>
             ))}
+            <Link className="public-staff-login" to="/login">
+              Staff Login
+            </Link>
           </div>
         </div>
 
         <div>
           <h2>Contact</h2>
-          <p>{publicContact.phone}</p>
-          <p>{publicContact.whatsapp}</p>
+          <p>Phone: {publicContact.phone}</p>
+          <p>WhatsApp: {publicContact.whatsapp}</p>
           <p>{publicContact.address}</p>
         </div>
       </div>
