@@ -23,7 +23,7 @@ export default function SaleDetailsModal({ isLoading, onClose, sale }) {
         </header>
         {isLoading ? <p className="grain-sales__details-loading">Loading sale details...</p> : sale && <div className="grain-sales__modal-body">
           <dl className="grain-sales__details-summary"><div><dt>Date & Time</dt><dd>{formatDateTime(sale)}</dd></div><div><dt>Customer</dt><dd>{sale.customer_name}</dd></div><div><dt>Payment Mode</dt><dd>{sale.payment_mode}</dd></div></dl>
-          <section className="grain-sales__details-items" aria-labelledby="sold-products-title"><h3 id="sold-products-title">Sold products</h3>{sale.sale_items.map((item) => <article className="grain-sales__item" key={item.id}><div className="grain-sales__item-name"><strong>{item.product_name}</strong><span>{item.quantity} × {formatCurrency(item.selling_price)}</span></div><div className="grain-sales__item-total"><strong>{formatCurrency(item.subtotal)}</strong><span>Line total</span></div></article>)}</section>
+          <section className="grain-sales__details-items" aria-labelledby="sold-products-title"><h3 id="sold-products-title">Sold products</h3>{sale.sale_items.map((item) => <article className="grain-sales__item" key={item.id}><div className="grain-sales__item-name"><strong>{item.product_name}</strong><span>{Number(item.quantity).toFixed(2)} kg × {formatCurrency(item.selling_price)}/kg</span></div><div className="grain-sales__item-total"><strong>{formatCurrency(item.subtotal)}</strong><span>Line total</span></div></article>)}</section>
           <div className="grain-sales__grand-total"><span>Grand Total</span><strong>{formatCurrency(sale.total_amount)}</strong></div>
         </div>}
       </section>

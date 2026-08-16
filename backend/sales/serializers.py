@@ -1,4 +1,4 @@
-from decimal import Decimal
+from decimal import Decimal, ROUND_CEILING
 
 from django.db import transaction
 from rest_framework import serializers
@@ -9,23 +9,46 @@ from .models import Sale, SaleItem
 
 
 class SaleItemSerializer(serializers.ModelSerializer):
-    product_name = serializers.CharField(source="product.product_name", read_only=True)
+    product_name = serializers.CharField(
+        source="product.product_name",
+        read_only=True,
+    )
 
     class Meta:
         model = SaleItem
-        fields = ("id", "product", "product_name", "quantity", "selling_price", "subtotal")
+        fields = (
+            "id",
+            "product",
+            "product_name",
+            "quantity",
+            "selling_price",
+            "subtotal",
+        )
         read_only_fields = ("id", "subtotal")
 
 
 class SaleItemInputSerializer(serializers.Serializer):
-    product = serializers.PrimaryKeyRelatedField(queryset=Inventory.objects.all())
-    quantity = serializers.IntegerField(min_value=1)
-    selling_price = serializers.DecimalField(max_digits=10, decimal_places=2, min_value=Decimal("0"))
+    product = serializers.PrimaryKeyRelatedField(
+        queryset=Inventory.objects.all()
+    )
+    quantity = serializers.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        min_value=Decimal("0.01"),
+    )
 
 
 class SaleSerializer(serializers.ModelSerializer):
-    items = SaleItemInputSerializer(many=True, write_only=True, required=False)
-    sale_items = SaleItemSerializer(source="items", many=True, read_only=True)
+    items = SaleItemInputSerializer(
+        many=True,
+        write_only=True,
+        required=False,
+    )
+    sale_items = SaleItemSerializer(
+        source="items",
+        many=True,
+        read_only=True,
+    )
 
     class Meta:
         model = Sale
@@ -43,11 +66,21 @@ class SaleSerializer(serializers.ModelSerializer):
             "sale_items",
             "created_at",
         )
-        read_only_fields = ("id", "invoice_number", "sale_date", "sale_time", "total_amount", "created_at")
+        read_only_fields = (
+            "id",
+            "invoice_number",
+            "sale_date",
+            "sale_time",
+            "total_amount",
+            "created_at",
+        )
 
     def validate(self, attrs):
         items = attrs.get("items")
-        business = attrs.get("business", getattr(self.instance, "business", None))
+        business = attrs.get(
+            "business",
+            getattr(self.instance, "business", None),
+        )
 
         if self.instance and "business" in attrs and business != self.instance.business:
             raise serializers.ValidationError({
@@ -55,7 +88,9 @@ class SaleSerializer(serializers.ModelSerializer):
             })
 
         if self.instance is None and not items:
-            raise serializers.ValidationError({"items": "At least one sale item is required."})
+            raise serializers.ValidationError({
+                "items": "At least one sale item is required.",
+            })
 
         if items and business:
             invalid_products = [
@@ -63,6 +98,7 @@ class SaleSerializer(serializers.ModelSerializer):
                 for item in items
                 if item["product"].business_id != business.id
             ]
+
             if invalid_products:
                 raise serializers.ValidationError({
                     "items": "Every product must belong to the sale business.",
@@ -72,12 +108,20 @@ class SaleSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def _next_invoice_number():
-        previous_sale = Sale.objects.select_for_update().order_by("-id").first()
+        previous_sale = (
+            Sale.objects
+            .select_for_update()
+            .order_by("-id")
+            .first()
+        )
+
         previous_number = 0
 
         if previous_sale:
             try:
-                previous_number = int(previous_sale.invoice_number.removeprefix("INV-"))
+                previous_number = int(
+                    previous_sale.invoice_number.removeprefix("INV-")
+                )
             except ValueError:
                 previous_number = previous_sale.id
 
@@ -86,57 +130,126 @@ class SaleSerializer(serializers.ModelSerializer):
     @staticmethod
     def _deduct_inventory(items, business):
         requested_quantities = {}
+
         for item in items:
             product_id = item["product"].id
-            requested_quantities[product_id] = requested_quantities.get(product_id, 0) + item["quantity"]
+            requested_quantities[product_id] = (
+                requested_quantities.get(product_id, Decimal("0"))
+                + item["quantity"]
+            )
 
         products = {
             product.id: product
-            for product in Inventory.objects.select_for_update().filter(
-                id__in=requested_quantities,
-                business=business,
+            for product in (
+                Inventory.objects
+                .select_for_update()
+                .filter(
+                    id__in=requested_quantities,
+                    business=business,
+                )
             )
         }
 
-        unavailable_product_ids = [
-            product_id
-            for product_id, quantity in requested_quantities.items()
-            if product_id not in products or products[product_id].remaining_bags < quantity
-        ]
+        # First make sure every requested product exists
+        # and has enough total stock in kilograms.
+        unavailable_product_ids = []
+
+        for product_id, quantity in requested_quantities.items():
+            product = products.get(product_id)
+
+            if not product:
+                unavailable_product_ids.append(product_id)
+                continue
+
+            if product.total_weight < quantity:
+                unavailable_product_ids.append(product_id)
+
         if unavailable_product_ids:
             raise serializers.ValidationError({
                 "items": "One or more products do not have enough remaining stock.",
             })
 
+        # Deduct physical stock.
+        #
+        # We use loose stock first.
+        # If loose stock isn't enough, we open the minimum
+        # number of unopened bags required.
         for product_id, quantity in requested_quantities.items():
             product = products[product_id]
-            product.remaining_bags -= quantity
-            product.save(update_fields=("remaining_bags", "updated_at"))
+
+            loose_stock = product.loose_stock_kg
+
+            if loose_stock < quantity:
+                shortage = quantity - loose_stock
+
+                bags_to_open = (
+                    shortage / product.bag_size
+                ).to_integral_value(rounding=ROUND_CEILING)
+
+                bags_to_open = int(bags_to_open)
+
+                product.remaining_bags -= bags_to_open
+
+                loose_stock += (
+                    product.bag_size * bags_to_open
+                )
+
+            product.loose_stock_kg = loose_stock - quantity
+
+            product.save(
+                update_fields=(
+                    "remaining_bags",
+                    "loose_stock_kg",
+                    "updated_at",
+                )
+            )
+
+        return products
 
     def create(self, validated_data):
         items = validated_data.pop("items")
         business = validated_data["business"]
 
         with transaction.atomic():
-            self._deduct_inventory(items, business)
-            total_amount = sum(
-                (item["quantity"] * item["selling_price"] for item in items),
-                Decimal("0"),
-            )
+            products = self._deduct_inventory(items, business)
+
+            sale_items = []
+
+            total_amount = Decimal("0")
+
+            for item in items:
+                product = products[item["product"].id]
+                quantity = item["quantity"]
+
+                selling_price = product.selling_price
+                subtotal = quantity * selling_price
+
+                total_amount += subtotal
+
+                sale_items.append(
+                    {
+                        "product": product,
+                        "quantity": quantity,
+                        "selling_price": selling_price,
+                        "subtotal": subtotal,
+                    }
+                )
+
             sale = Sale.objects.create(
                 **validated_data,
                 invoice_number=self._next_invoice_number(),
                 total_amount=total_amount,
             )
+
             SaleItem.objects.bulk_create([
                 SaleItem(
                     sale=sale,
                     product=item["product"],
                     quantity=item["quantity"],
                     selling_price=item["selling_price"],
-                    subtotal=item["quantity"] * item["selling_price"],
+                    subtotal=item["subtotal"],
                 )
-                for item in items
+                for item in sale_items
             ])
 
         return sale

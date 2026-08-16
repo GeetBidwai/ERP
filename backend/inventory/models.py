@@ -48,6 +48,12 @@ class Inventory(models.Model):
 
     remaining_bags = models.PositiveIntegerField()
 
+    loose_stock_kg = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0
+    )
+
     description = models.TextField(
         blank=True,
         null=True
@@ -65,7 +71,7 @@ class Inventory(models.Model):
 
     @property
     def total_weight(self):
-        return self.bag_size * self.remaining_bags
+        return (self.bag_size * self.remaining_bags) + self.loose_stock_kg
 
     def __str__(self):
         return self.product_name

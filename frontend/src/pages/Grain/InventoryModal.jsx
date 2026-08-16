@@ -46,7 +46,7 @@ export default function InventoryModal({
           {formData.bagSize === "Custom" && <label>Custom Bag Size (kg)<input name="customBagSize" type="number" min="0" step="0.01" value={formData.customBagSize} onChange={onChange} required /></label>}
           <label>Purchase Price (/kg)<input name="purchasePrice" type="number" min="0" step="0.01" value={formData.purchasePrice} onChange={onChange} required /></label>
           <label>Selling Price (/kg)<input name="sellingPrice" type="number" min="0" step="0.01" value={formData.sellingPrice} onChange={onChange} required /></label>
-          <label>Opening Stock (Bags)<input name="openingStock" type="number" min="0" step="1" value={formData.openingStock} onChange={onChange} required /></label>
+          <label>Number of Bags<input name="openingStock" type="number" min="0" step="1" value={formData.openingStock} onChange={onChange} required /></label>
           <label>
             Status
             <select name="status" value={formData.status} onChange={onChange}>

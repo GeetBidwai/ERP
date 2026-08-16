@@ -10,6 +10,7 @@ export const initialForm = {
   purchasePrice: "",
   sellingPrice: "",
   openingStock: "",
+  looseStockKg: "0",
   description: "",
   status: "Active",
 };
@@ -42,6 +43,7 @@ export function createFormDataFromProduct(product) {
     purchasePrice: String(product.purchasePrice),
     sellingPrice: String(product.sellingPrice),
     openingStock: String(product.openingStock),
+    looseStockKg: String(product.looseStockKg ?? 0),
     description: product.description,
     status: product.status,
   };
@@ -57,6 +59,7 @@ export function normalizeProduct(product) {
     sellingPrice: product.selling_price ?? product.sellingPrice,
     openingStock: product.opening_stock ?? product.openingStock,
     remainingBags: product.remaining_bags ?? product.remainingBags,
+    looseStockKg: product.loose_stock_kg ?? product.looseStockKg ?? 0,
     totalWeight: product.total_weight ?? product.totalWeight,
     description: product.description ?? "",
     status: product.status,

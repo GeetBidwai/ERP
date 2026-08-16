@@ -32,11 +32,18 @@ function getErrorMessage(error, fallbackMessage) {
 }
 
 function normalizeInventory(product) {
+  const bagSize = Number(product.bag_size ?? product.bagSize) || 0;
+  const remainingBags = Number(product.remaining_bags ?? product.remainingBags) || 0;
+  const looseStockKg = Number(product.loose_stock_kg ?? product.looseStockKg) || 0;
+
   return {
     id: product.id,
     name: product.product_name ?? product.productName,
-    price: (Number(product.selling_price ?? product.sellingPrice) || 0) * (Number(product.bag_size ?? product.bagSize) || 0),
-    remainingBags: Number(product.remaining_bags ?? product.remainingBags) || 0,
+    price: Number(product.selling_price ?? product.sellingPrice) || 0,
+    bagSize,
+    remainingBags,
+    looseStockKg,
+    totalWeight: (remainingBags * bagSize) + looseStockKg,
   };
 }
 
@@ -76,8 +83,7 @@ export default function GrainSales() {
   const [paymentMode, setPaymentMode] = useState("Cash");
   const [products, setProducts] = useState([]);
   const [selectedProductId, setSelectedProductId] = useState("");
-  const [sellingPrice, setSellingPrice] = useState("");
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState("");
   const [saleItems, setSaleItems] = useState([]);
   const [sales, setSales] = useState([]);
   const [customerName, setCustomerName] = useState("Walk-in Customer");
@@ -120,7 +126,6 @@ export default function GrainSales() {
         .map(normalizeInventory);
       setProducts(businessProducts);
       setSelectedProductId((currentId) => currentId || String(businessProducts[0]?.id ?? ""));
-      setSellingPrice((currentPrice) => currentPrice || businessProducts[0]?.price || "");
     } catch (error) {
       setMessage(getErrorMessage(error, "Unable to load inventory products. Please try again."));
       setMessageType("error");
@@ -159,7 +164,6 @@ export default function GrainSales() {
     setPaymentMode("Cash");
     setCustomerName("Walk-in Customer");
     setSelectedProductId(String(firstProduct?.id ?? ""));
-    setSellingPrice(firstProduct?.price ?? "");
     setQuantity(1);
     setSaleItems([]);
   }
@@ -177,21 +181,25 @@ export default function GrainSales() {
   function handleProductChange(event) {
     const product = products.find((item) => String(item.id) === event.target.value);
     setSelectedProductId(event.target.value);
-    setSellingPrice(product?.price ?? "");
   }
 
   function addProduct() {
-    const product = products.find((item) => String(item.id) === selectedProductId);
-    const itemQuantity = Number(quantity);
-    const itemPrice = Number(sellingPrice);
+    const product = products.find(
+      (item) => String(item.id) === selectedProductId
+    );
 
-    if (!product || itemQuantity < 1 || itemPrice < 0) {
-      showMessage("error", "Select a product and enter a valid quantity and price.");
+    const itemQuantity = Number(quantity);
+
+    if (!product || !Number.isFinite(itemQuantity) || itemQuantity <= 0) {
+      showMessage("error", "Select a product and enter a valid quantity in kg.");
       return;
     }
 
-    if (itemQuantity > product.remainingBags) {
-      showMessage("error", `Only ${product.remainingBags} bag(s) of ${product.name} remain in stock.`);
+    if (itemQuantity > product.totalWeight) {
+      showMessage(
+        "error",
+        `Only ${product.totalWeight.toFixed(2)} kg of ${product.name} remain in stock.`
+      );
       return;
     }
 
@@ -201,12 +209,13 @@ export default function GrainSales() {
         id: `${product.id}-${Date.now()}`,
         productId: product.id,
         name: product.name,
-        price: itemPrice,
+        price: product.price,
         quantity: itemQuantity,
-        subtotal: itemPrice * itemQuantity,
+        subtotal: product.price * itemQuantity,
       },
     ]);
-    setQuantity(1);
+
+    setQuantity("");
     setMessage("");
   }
 
@@ -255,7 +264,6 @@ export default function GrainSales() {
         items: saleItems.map((item) => ({
           product: item.productId,
           quantity: item.quantity,
-          selling_price: item.price,
         })),
       });
       await Promise.all([fetchSales(), fetchProducts()]);
@@ -295,15 +303,198 @@ export default function GrainSales() {
         </section>
       )}
 
-      {isModalOpen && <div className="grain-sales__backdrop" role="presentation"><section className="grain-sales__modal" role="dialog" aria-modal="true" aria-labelledby="new-sale-title">
-        <header className="grain-sales__modal-header"><div><p className="grain-sales__eyebrow">New transaction</p><h2 id="new-sale-title">Create Sale</h2></div><button className="grain-sales__close-button" type="button" onClick={closeSaleModal} aria-label="Close sale form">×</button></header>
-        <div className="grain-sales__modal-body">
-          <div className="grain-sales__details-grid"><label>Customer<select value={customerName} onChange={(event) => setCustomerName(event.target.value)}><option>Walk-in Customer</option></select></label><label>Payment Mode<select value={paymentMode} onChange={(event) => setPaymentMode(event.target.value)}><option>Cash</option><option>UPI</option><option>Bank Transfer</option></select></label></div>
-          <section className="grain-sales__product-picker" aria-labelledby="add-product-title"><h3 id="add-product-title">Add products</h3><div className="grain-sales__product-controls"><label>Product<select value={selectedProductId} onChange={handleProductChange} disabled={products.length === 0}>{products.length === 0 ? <option>No inventory products available</option> : products.map((product) => <option key={product.id} value={product.id}>{product.name} ({product.remainingBags} bags)</option>)}</select></label><label>Selling Price<input type="number" min="0" step="0.01" value={sellingPrice} onChange={(event) => setSellingPrice(event.target.value)} /></label><label>Quantity<input type="number" min="1" step="1" value={quantity} onChange={(event) => setQuantity(event.target.value)} /></label><button type="button" onClick={addProduct} disabled={products.length === 0}>Add Product</button></div></section>
-          <section className="grain-sales__items" aria-labelledby="sale-items-title"><div className="grain-sales__section-heading"><h3 id="sale-items-title">Selected products</h3><span>{saleItems.length} item{saleItems.length === 1 ? "" : "s"}</span></div>{saleItems.length === 0 ? <p className="grain-sales__no-items">Add a product to start this sale.</p> : <div className="grain-sales__items-list">{saleItems.map((item) => <article className="grain-sales__item" key={item.id}><div className="grain-sales__item-name"><strong>{item.name}</strong><span>{item.quantity} × {formatCurrency(item.price)}</span></div><div className="grain-sales__item-total"><strong>{formatCurrency(item.subtotal)}</strong><button type="button" onClick={() => removeProduct(item.id)}>Remove</button></div></article>)}</div>}</section>
+      {isModalOpen && (
+        <div className="grain-sales__backdrop" role="presentation">
+          <section
+            className="grain-sales__modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="new-sale-title"
+          >
+            <header className="grain-sales__modal-header">
+              <div>
+                <p className="grain-sales__eyebrow">New transaction</p>
+                <h2 id="new-sale-title">Create Sale</h2>
+              </div>
+
+              <button
+                className="grain-sales__close-button"
+                type="button"
+                onClick={closeSaleModal}
+                aria-label="Close sale form"
+              >
+                ×
+              </button>
+            </header>
+
+            <div className="grain-sales__modal-body">
+              <div className="grain-sales__details-grid">
+                <label>
+                  Customer
+                  <select
+                    value={customerName}
+                    onChange={(event) => setCustomerName(event.target.value)}
+                  >
+                    <option>Walk-in Customer</option>
+                  </select>
+                </label>
+
+                <label>
+                  Payment Mode
+                  <select
+                    value={paymentMode}
+                    onChange={(event) => setPaymentMode(event.target.value)}
+                  >
+                    <option>Cash</option>
+                    <option>UPI</option>
+                    <option>Bank Transfer</option>
+                  </select>
+                </label>
+              </div>
+
+              <section
+                className="grain-sales__product-picker"
+                aria-labelledby="add-product-title"
+              >
+                <h3 id="add-product-title">Add products</h3>
+
+                <div className="grain-sales__product-controls">
+                  <label>
+                    Product
+                    <select
+                      value={selectedProductId}
+                      onChange={handleProductChange}
+                      disabled={products.length === 0}
+                    >
+                      {products.length === 0 ? (
+                        <option>No inventory products available</option>
+                      ) : (
+                        products.map((product) => (
+                          <option key={product.id} value={product.id}>
+                            {product.name}
+                          </option>
+                        ))
+                      )}
+                    </select>
+                  </label>
+
+                  <label>
+                    Available Stock
+                    <input
+                      type="text"
+                      value={
+                        products
+                          .find(
+                            (product) =>
+                              String(product.id) === String(selectedProductId),
+                          )
+                          ?.totalWeight.toFixed(2) ?? "0.00"
+                      }
+                      readOnly
+                    />
+                  </label>
+
+                  <label>
+                    Quantity (kg)
+                    <input
+                      type="number"
+                      min="0.01"
+                      step="0.01"
+                      value={quantity}
+                      onChange={(event) => setQuantity(event.target.value)}
+                      placeholder="Enter kg"
+                    />
+                  </label>
+
+                  <div className="grain-sales__price-display">
+                    Price:{" "}
+                    {formatCurrency(
+                      products.find(
+                        (product) =>
+                          String(product.id) === String(selectedProductId),
+                      )?.price ?? 0,
+                    )}
+                    /kg
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={addProduct}
+                    disabled={products.length === 0}
+                  >
+                    Add Product
+                  </button>
+                </div>
+              </section>
+
+              <section
+                className="grain-sales__items"
+                aria-labelledby="sale-items-title"
+              >
+                <div className="grain-sales__section-heading">
+                  <h3 id="sale-items-title">Selected products</h3>
+                  <span>
+                    {saleItems.length} item{saleItems.length === 1 ? "" : "s"}
+                  </span>
+                </div>
+
+                {saleItems.length === 0 ? (
+                  <p className="grain-sales__no-items">
+                    Add a product to start this sale.
+                  </p>
+                ) : (
+                  <div className="grain-sales__items-list">
+                    {saleItems.map((item) => (
+                      <article className="grain-sales__item" key={item.id}>
+                        <div className="grain-sales__item-name">
+                          <strong>{item.name}</strong>
+
+                          <span>
+                            {item.quantity.toFixed(2)} kg ×{" "}
+                            {formatCurrency(item.price)}/kg
+                          </span>
+                        </div>
+
+                        <div className="grain-sales__item-total">
+                          <strong>{formatCurrency(item.subtotal)}</strong>
+
+                          <button
+                            type="button"
+                            onClick={() => removeProduct(item.id)}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                )}
+              </section>
+            </div>
+
+            <footer className="grain-sales__modal-footer">
+              <div className="grain-sales__grand-total">
+                <span>Grand Total</span>
+                <strong>{formatCurrency(grandTotal)}</strong>
+              </div>
+
+              <div className="grain-sales__form-actions">
+                <button type="button" onClick={closeSaleModal}>
+                  Cancel
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleGenerateInvoice}
+                  disabled={saleItems.length === 0 || isSubmitting}
+                >
+                  {isSubmitting ? "Creating..." : "Generate Invoice"}
+                </button>
+              </div>
+            </footer>
+          </section>
         </div>
-        <footer className="grain-sales__modal-footer"><div className="grain-sales__grand-total"><span>Grand Total</span><strong>{formatCurrency(grandTotal)}</strong></div><div className="grain-sales__form-actions"><button type="button" onClick={closeSaleModal}>Cancel</button><button type="button" onClick={handleGenerateInvoice} disabled={saleItems.length === 0 || isSubmitting}>{isSubmitting ? "Creating..." : "Generate Invoice"}</button></div></footer>
-      </section></div>}
+      )}
       {isDetailsOpen && <SaleDetailsModal isLoading={isDetailsLoading} onClose={closeSaleDetails} sale={selectedSale} />}
     </section>
   );

@@ -96,6 +96,7 @@ export default function GrainInventory() {
     }
 
     const openingStock = Number(formData.openingStock) || 0;
+    const existingProduct = products.find((product) => String(product.id) === String(editingProductId));
     const payload = {
       business: currentBusiness.id,
       product_name: formData.productName.trim(),
@@ -103,8 +104,9 @@ export default function GrainInventory() {
       bag_size: Number(selectedBagSize),
       purchase_price: Number(formData.purchasePrice) || 0,
       selling_price: Number(formData.sellingPrice) || 0,
-      opening_stock: openingStock,
-      remaining_bags: openingStock,
+      opening_stock: editingProductId ? (existingProduct?.openingStock ?? openingStock) : openingStock,
+      remaining_bags: editingProductId ? (existingProduct?.remainingBags ?? openingStock) : openingStock,
+      loose_stock_kg: editingProductId ? (existingProduct?.looseStockKg ?? 0) : 0,
       description: formData.description.trim(),
       status: formData.status,
     };
