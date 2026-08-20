@@ -10,9 +10,7 @@ export default function PublicFooter() {
           <Link className="public-footer-brand" to="/sai-dhanya">
             {businessName}
           </Link>
-          <p>Alamgir Road, Bhingar, Ahilyanagar</p>
-          <p>{publicContact.hours}</p>
-          <p>Phone: {publicContact.phone}</p>
+          <p>Quality grains for everyday needs.</p>
         </div>
 
         <div>
@@ -23,9 +21,6 @@ export default function PublicFooter() {
                 {link.label}
               </Link>
             ))}
-            <Link className="public-staff-login" to="/login">
-              Staff Login
-            </Link>
           </div>
         </div>
 
@@ -38,7 +33,7 @@ export default function PublicFooter() {
       </div>
 
       <div className="public-footer-bottom public-container">
-        <span>Copyright {new Date().getFullYear()} {businessName}. All rights reserved.</span>
+        <span>© {new Date().getFullYear()} {businessName}</span>
       </div>
     </footer>
   );

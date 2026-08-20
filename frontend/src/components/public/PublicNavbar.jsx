@@ -44,6 +44,13 @@ export default function PublicNavbar() {
             {link.label}
           </NavLink>
         ))}
+        <Link
+          className="public-nav-link public-staff-login"
+          to="/login"
+          onClick={() => setIsOpen(false)}
+        >
+          Staff Login
+        </Link>
       </nav>
     </header>
   );

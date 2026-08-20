@@ -6,10 +6,10 @@ const grainNavItems = [
   { label: "Dashboard", path: "/grain/dashboard", icon: "home" },
   { label: "Inventory", path: "/grain/inventory", icon: "box" },
   { label: "Sales", path: "/grain/sales", icon: "receipt" },
-  { label: "Customers", path: "/grain/customers", icon: "users" },
   { label: "Suppliers", path: "/grain/suppliers", icon: "truck" },
-  { label: "Finance", path: "/grain/finance", icon: "wallet" },
   { label: "Reports", path: "/grain/reports", icon: "chart" },
+  { label: "Customers", path: "/grain/customers", icon: "users" },
+  { label: "Finance", path: "/grain/finance", icon: "wallet" },
 ];
 
 export default function GrainLayout({ children }) {
