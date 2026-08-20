@@ -72,15 +72,503 @@
 .grain-inventory__form-actions button:first-child { color: var(--text); background: var(--surface); border: 0.5px solid var(--border); }
 .grain-inventory__form-actions button:last-child { color: var(--text-on-dark); background: var(--accent); }
 
+/* =========================================
+   MOBILE INVENTORY CARDS
+   ========================================= */
+
+.grain-inventory__mobile-grid {
+  display: none;
+}
+
+.grain-inventory__mobile-card {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+
+  display: grid;
+  gap: 12px;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.16s ease,
+    border-color 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+.grain-inventory__mobile-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.09);
+}
+
+.grain-inventory__mobile-card:focus-visible {
+  outline: 3px solid rgba(99, 153, 34, 0.3);
+  outline-offset: 2px;
+}
+
+.grain-inventory__mobile-card-header {
+  display: grid;
+  gap: 8px;
+}
+
+.grain-inventory__mobile-card-header h2 {
+  margin: 0;
+  color: var(--text-h);
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.grain-inventory__mobile-card-header p {
+  margin: 4px 0 0;
+  color: var(--text);
+  font-size: 0.76rem;
+}
+
+.grain-inventory__mobile-card-header .grain-inventory__status {
+  justify-self: start;
+}
+
+.grain-inventory__mobile-details {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 7px;
+}
+
+.grain-inventory__mobile-details > div {
+  min-width: 0;
+  padding: 9px 8px;
+  border-radius: 10px;
+  background: var(--accent-bg);
+  text-align: center;
+}
+
+.grain-inventory__mobile-details span {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--text);
+  font-size: 0.66rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.grain-inventory__mobile-details strong {
+  display: block;
+  color: var(--text-h);
+  font-size: 0.8rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.grain-inventory__mobile-card-hint {
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  color: var(--accent-strong);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+
+/* =========================================
+   MOBILE PRODUCT DETAILS MODAL
+   ========================================= */
+
+.grain-inventory__details-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: grid;
+  place-items: center;
+
+  padding: 20px;
+  box-sizing: border-box;
+
+  background: rgba(25, 28, 23, 0.55);
+  backdrop-filter: blur(4px);
+}
+
+.grain-inventory__details-modal {
+  width: min(620px, 100%);
+  max-height: min(760px, 90svh);
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  border: 1px solid var(--border);
+  border-radius: 20px;
+
+  background: var(--surface);
+  color: var(--text-h);
+
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
+}
+
+.grain-inventory__details-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 16px;
+  padding: 22px 24px;
+
+  border-bottom: 1px solid var(--border);
+}
+
+.grain-inventory__details-header p {
+  margin: 0 0 5px;
+
+  color: var(--accent-strong);
+
+  font-size: 0.72rem;
+  font-weight: 800;
+
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.grain-inventory__details-header h2 {
+  margin: 0;
+
+  color: var(--text-h);
+
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.grain-inventory__details-header span {
+  display: block;
+
+  margin-top: 5px;
+
+  color: var(--text);
+
+  font-size: 0.85rem;
+}
+
+.grain-inventory__details-close {
+  flex: 0 0 auto;
+
+  width: 38px;
+  height: 38px;
+
+  display: grid;
+  place-items: center;
+
+  padding: 0;
+
+  border: 1px solid var(--border);
+  border-radius: 10px;
+
+  background: var(--bg);
+  color: var(--text-h);
+
+  font-size: 1.5rem;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.grain-inventory__details-close:hover {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+.grain-inventory__details-body {
+  overflow-y: auto;
+  padding: 20px 24px;
+}
+
+.grain-inventory__details-status-row {
+  margin-bottom: 16px;
+}
+
+.grain-inventory__details-price-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.grain-inventory__details-price-grid > div {
+  padding: 14px;
+
+  border-radius: 12px;
+
+  background: var(--accent-bg);
+}
+
+.grain-inventory__details-price-grid span,
+.grain-inventory__details-list span {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: var(--text);
+
+  font-size: 0.7rem;
+  font-weight: 700;
+
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.grain-inventory__details-price-grid strong {
+  display: block;
+
+  color: var(--text-h);
+
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.grain-inventory__details-section {
+  margin-top: 22px;
+}
+
+.grain-inventory__details-section h3 {
+  margin: 0 0 10px;
+
+  color: var(--text-h);
+
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.grain-inventory__details-list {
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  border-top: 1px solid var(--border);
+}
+
+.grain-inventory__details-list > div {
+  padding: 12px 0;
+
+  border-bottom: 1px solid var(--border);
+}
+
+.grain-inventory__details-list > div:nth-child(odd) {
+  padding-right: 16px;
+}
+
+.grain-inventory__details-list > div:nth-child(even) {
+  padding-left: 16px;
+  border-left: 1px solid var(--border);
+}
+
+.grain-inventory__details-list strong {
+  color: var(--text-h);
+  font-size: 0.9rem;
+}
+
+.grain-inventory__details-description {
+  margin: 0;
+  padding: 12px;
+
+  border-radius: 10px;
+
+  background: var(--accent-bg);
+
+  color: var(--text);
+
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.grain-inventory__details-footer {
+  display: flex;
+  gap: 10px;
+
+  padding: 16px 24px;
+
+  border-top: 1px solid var(--border);
+}
+
+.grain-inventory__details-footer button {
+  min-height: 44px;
+
+  padding: 10px 16px;
+
+  border-radius: 10px;
+
+  font: inherit;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.grain-inventory__details-delete {
+  flex: 1;
+
+  border: 1px solid #ef8c8c;
+
+  background: transparent;
+  color: #b3261e;
+}
+
+.grain-inventory__details-delete:hover {
+  background: #fff0ef;
+}
+
+.grain-inventory__details-edit {
+  flex: 1;
+
+  border: 1px solid var(--accent);
+
+  background: var(--accent);
+  color: var(--text-on-dark);
+}
+
+.grain-inventory__details-edit:hover {
+  filter: brightness(0.95);
+}
 @media (max-width: 720px) {
-  .grain-inventory__header { align-items: stretch; flex-direction: column; }
-  .grain-inventory__add-button { width: 100%; }
+  .grain-inventory__header {
+    align-items: stretch;
+    flex-direction: column;
+  }
 
-  /* full-screen bottom sheet instead of centered popup */
-  .grain-inventory__modal-backdrop { align-items: flex-end; padding: 0; }
-  .grain-inventory__modal { width: 100%; max-height: 92svh; border-radius: 16px 16px 0 0; }
+  .grain-inventory__add-button {
+    width: 100%;
+  }
 
-  .grain-inventory__form { grid-template-columns: 1fr; }
-  .grain-inventory__form-actions { flex-direction: column-reverse; }
-  .grain-inventory__form-actions button { width: 100%; }
+  /* Hide the wide desktop table on mobile */
+  .grain-inventory__table-wrap {
+    display: none;
+  }
+
+  /* Two product cards per row */
+  .grain-inventory__mobile-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .grain-inventory__card {
+    overflow: visible;
+  }
+
+  /* Product card */
+  .grain-inventory__mobile-card {
+    padding: 14px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition:
+      transform 0.18s ease,
+      box-shadow 0.18s ease,
+      border-color 0.18s ease;
+  }
+
+  .grain-inventory__mobile-card:active {
+    transform: scale(0.98);
+  }
+
+  /* Card header */
+  .grain-inventory__mobile-card-header {
+    display: block;
+    margin-bottom: 14px;
+  }
+
+  .grain-inventory__mobile-card-header h2 {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.25;
+    color: var(--text-h);
+  }
+
+  .grain-inventory__mobile-card-header p {
+    margin: 5px 0 0;
+    color: var(--text);
+    font-size: 0.78rem;
+    line-height: 1.35;
+  }
+
+  .grain-inventory__mobile-card-header .grain-inventory__status {
+    display: inline-flex;
+    margin-top: 9px;
+    padding: 5px 9px;
+    border-radius: 999px;
+    font-size: 0.7rem;
+  }
+
+  /* Only show the four important price fields */
+  .grain-inventory__mobile-details {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 7px;
+  }
+
+  .grain-inventory__mobile-details > div {
+    padding: 9px 7px;
+    border-radius: 10px;
+    background: var(--accent-soft, #edf5df);
+    text-align: center;
+  }
+
+  .grain-inventory__mobile-details > div:nth-child(n + 5) {
+    display: none;
+  }
+
+  .grain-inventory__mobile-details span {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--text);
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .grain-inventory__mobile-details strong {
+    display: block;
+    color: var(--text-h);
+    font-size: 0.82rem;
+    line-height: 1.25;
+  }
+
+  /* Hide the old Total Stock + Edit/Delete footer */
+  .grain-inventory__mobile-footer {
+    display: none;
+  }
+
+  /* Product detail modal */
+  .grain-inventory__modal-backdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .grain-inventory__modal {
+    width: 100%;
+    max-width: 100%;
+    max-height: 92svh;
+    border-radius: 18px 18px 0 0;
+    overflow-y: auto;
+  }
+
+  /* Modal form */
+  .grain-inventory__form {
+    grid-template-columns: 1fr;
+  }
+
+  .grain-inventory__form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .grain-inventory__form-actions button {
+    width: 100%;
+  }
 }
