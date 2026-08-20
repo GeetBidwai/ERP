@@ -6,6 +6,8 @@ export default function GrainCustomers() {
       title="Customers"
       description="We're building customer management."
       estimatedModule="a future update"
+      backTo="/grain/dashboard"
+      backLabel="Back to Dashboard"
     />
   );
 }

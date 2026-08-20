@@ -24,6 +24,7 @@ import PublicProducts from "../pages/public/PublicProducts";
 import PublicContact from "../pages/public/PublicContact";
 import AuthProvider from "../context/AuthProvider";
 import BusinessProvider from "../context/BusinessProvider";
+import ComingSoon from "../components/ComingSoon";
 
 function ErpProviders() {
   return (
@@ -62,6 +63,34 @@ export default function AppRoutes() {
             element={
               <PrivateRoute>
                 <BusinessSelection />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/scrap/dashboard"
+            element={
+              <PrivateRoute>
+                <ComingSoon
+                  title="Scrap Management"
+                  description="Manage scrap records, sales, stock, and related business activity from this workspace."
+                  estimatedModule="a future update"
+                  icon="♻"
+                />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/centering/dashboard"
+            element={
+              <PrivateRoute>
+                <ComingSoon
+                  title="Centering Management"
+                  description="Manage centering jobs, materials, customers, and business activity from this workspace."
+                  estimatedModule="a future update"
+                  icon="⚙"
+                />
               </PrivateRoute>
             }
           />

@@ -6,6 +6,8 @@ export default function GrainFinance() {
       title="Finance"
       description="Financial accounting and expense tracking are coming soon."
       estimatedModule="a future update"
+      backTo="/grain/dashboard"
+      backLabel="Back to Dashboard"
     />
   );
 }

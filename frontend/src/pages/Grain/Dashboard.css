@@ -1,52 +1,533 @@
-.grain-dashboard { display: grid; gap: 24px; width: 100%; }
-.grain-dashboard__header h1, .dashboard-panel h2 { margin: 0; color: var(--text-h); font-weight: 500; }
-.grain-dashboard__header h1 { font-size: 1.75rem; }
-.grain-dashboard__header p { margin: 8px 0 0; color: var(--text); }
+.grain-dashboard {
+  display: grid;
+  gap: 24px;
+  width: 100%;
+}
 
-.dashboard-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+/* =========================================
+   HEADER
+========================================= */
+
+.grain-dashboard__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.grain-dashboard__header h1 {
+  margin: 0;
+  color: var(--text-h);
+  font-size: 2.6rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.grain-dashboard__header p {
+  margin: 8px 0 0;
+  color: var(--text);
+}
+
+.grain-dashboard__eyebrow {
+  margin: 0 0 4px !important;
+  color: var(--accent-text) !important;
+  font-size: 0.75rem !important;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.grain-dashboard__header-actions {
+  flex-shrink: 0;
+}
+
+.dashboard-header-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 44px;
+  padding: 0 20px;
+
+  border-radius: 10px;
+
+  background: var(--accent);
+  color: white;
+
+  font-weight: 700;
+  text-decoration: none;
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.dashboard-header-button:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+}
+
+/* =========================================
+   KPI CARDS
+========================================= */
+
+.dashboard-overview {
+  display: grid;
+
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  gap: 14px;
+}
 
 .dashboard-card {
-  display: grid; gap: 6px; padding: 16px;
-  border-radius: 14px;
+  position: relative;
+
+  display: grid;
+  gap: 8px;
+
+  min-height: 92px;
+  padding: 20px;
+
+  overflow: hidden;
+
+  border-radius: 18px;
+
   background: var(--surface-dark);
   color: var(--text-on-dark);
 }
-.dashboard-card span { color: #b4b2a9; font-size: 12px; }
-.dashboard-card strong { color: var(--text-on-dark); font-size: 1.3rem; font-weight: 500; }
+
+.dashboard-card::after {
+  content: "";
+
+  position: absolute;
+
+  width: 80px;
+  height: 80px;
+
+  right: -18px;
+  bottom: -28px;
+
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dashboard-card span {
+  color: #b4b2a9;
+
+  font-size: 13px;
+}
+
+.dashboard-card strong {
+  position: relative;
+  z-index: 1;
+
+  color: var(--text-on-dark);
+
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+/* =========================================
+   DASHBOARD PANELS
+========================================= */
 
 .dashboard-panel {
+  display: grid;
+  gap: 14px;
+
+  padding: 18px;
+
   border: 0.5px solid var(--border);
   border-radius: 14px;
+
   background: var(--surface);
+
   box-shadow: var(--shadow);
-  display: grid; gap: 14px; padding: 18px;
 }
-.dashboard-panel h2 { font-size: 1rem; }
 
-.dashboard-empty, .dashboard-list span { color: var(--text); }
-.dashboard-empty { margin: 0; min-height: 70px; display: grid; place-items: center; text-align: center; }
+.dashboard-panel h2 {
+  margin: 0;
 
-.dashboard-list { display: grid; gap: 8px; }
+  color: var(--text-h);
+
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.dashboard-empty {
+  margin: 0;
+
+  min-height: 70px;
+
+  display: grid;
+  place-items: center;
+
+  text-align: center;
+
+  color: var(--text);
+}
+
+/* =========================================
+   LISTS
+========================================= */
+
+.dashboard-list {
+  display: grid;
+  gap: 8px;
+}
+
 .dashboard-list article {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  padding: 12px; border-radius: 10px; background: var(--accent-bg);
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  padding: 12px;
+
+  border-radius: 10px;
+
+  background: var(--accent-bg);
 }
-.dashboard-list strong { color: var(--accent-text); }
 
-.dashboard-grid { display: grid; gap: 14px; }
-
-.sales-chart { display: flex; height: 160px; align-items: end; justify-content: space-between; gap: 6px; }
-.sales-chart__column { display: grid; height: 100%; flex: 1; align-items: end; gap: 6px; }
-.sales-chart__column span { display: block; min-height: 4px; border-radius: 6px 6px 0 0; background: var(--accent); }
-.sales-chart__column small { color: var(--text); text-align: center; font-size: 11px; }
-
-.grain-dashboard__message, .grain-dashboard__loading {
-  margin: 0; padding: 14px; border-radius: 10px; color: var(--text); background: var(--surface);
+.dashboard-list span {
+  color: var(--text);
 }
-.grain-dashboard__message { color: #791f1f; border: 0.5px solid #f09595; background: #fcebeb; }
 
-@media (min-width: 760px) {
-  .dashboard-cards { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .dashboard-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .dashboard-panel:first-child { grid-column: 1 / -1; }
+.dashboard-list strong {
+  color: var(--accent-text);
+}
+
+/* =========================================
+   WEEKLY SALES CHART
+========================================= */
+
+.dashboard-main-chart {
+  width: 100%;
+}
+
+.sales-chart {
+  display: flex;
+
+  height: 160px;
+
+  align-items: end;
+  justify-content: space-between;
+
+  gap: 6px;
+}
+
+.sales-chart__column {
+  display: grid;
+
+  height: 100%;
+
+  flex: 1;
+
+  align-items: end;
+
+  gap: 6px;
+}
+
+.sales-chart__column span {
+  display: block;
+
+  min-height: 4px;
+
+  border-radius: 6px 6px 0 0;
+
+  background: var(--accent);
+}
+
+.sales-chart__column small {
+  color: var(--text);
+
+  text-align: center;
+
+  font-size: 11px;
+}
+
+/* =========================================
+   LOWER DASHBOARD
+========================================= */
+
+.dashboard-grid {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 14px;
+}
+
+/*
+   Recent Sales is full width.
+   Low Stock + Top Products sit underneath.
+*/
+
+.dashboard-grid > .dashboard-panel:first-child {
+  grid-column: 1 / -1;
+}
+
+/* =========================================
+   QUICK ACTIONS
+========================================= */
+
+.dashboard-quick-actions {
+  display: grid;
+  gap: 18px;
+
+  padding: 20px;
+
+  border: 1px solid var(--border);
+  border-radius: 18px;
+
+  background: var(--surface);
+
+  box-shadow: var(--shadow);
+}
+
+.dashboard-quick-actions__eyebrow {
+  margin: 0 0 6px;
+
+  color: var(--accent-text);
+
+  font-size: 0.75rem;
+  font-weight: 800;
+
+  letter-spacing: 0.12em;
+
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.dashboard-quick-actions h2 {
+  margin: 0;
+
+  color: var(--text-h);
+
+  font-size: 1.15rem;
+  font-weight: 700;
+
+  text-align: center;
+}
+
+.dashboard-quick-actions__grid {
+  display: grid;
+
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  gap: 10px;
+}
+
+.dashboard-quick-actions__grid a {
+  display: grid;
+
+  grid-template-columns: auto 1fr;
+
+  column-gap: 10px;
+  row-gap: 4px;
+
+  align-items: center;
+
+  padding: 14px;
+
+  border: 1px solid var(--border);
+  border-radius: 13px;
+
+  background: var(--bg);
+
+  color: var(--text-h);
+
+  text-decoration: none;
+
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    transform 0.15s ease;
+}
+
+.dashboard-quick-actions__grid a:hover {
+  border-color: var(--accent);
+
+  background: var(--accent-bg);
+
+  transform: translateY(-1px);
+}
+
+.dashboard-quick-actions__grid a > span {
+  grid-row: span 2;
+
+  width: 34px;
+  height: 34px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 10px;
+
+  background: var(--accent-bg);
+
+  color: var(--accent-text);
+
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.dashboard-quick-actions__grid strong {
+  font-size: 0.9rem;
+}
+
+.dashboard-quick-actions__grid small {
+  color: var(--text);
+
+  font-size: 0.72rem;
+}
+
+/* =========================================
+   LOADING / ERROR
+========================================= */
+
+.dashboard-loading-card {
+  min-height: 180px;
+
+  display: grid;
+
+  place-items: center;
+  align-content: center;
+
+  gap: 12px;
+
+  border: 1px solid var(--border);
+  border-radius: 18px;
+
+  background: var(--surface);
+
+  box-shadow: var(--shadow);
+}
+
+.dashboard-loading-card p {
+  margin: 0;
+
+  color: var(--text);
+}
+
+.dashboard-loading-dot {
+  width: 34px;
+  height: 34px;
+
+  border: 4px solid var(--accent-bg);
+  border-top-color: var(--accent);
+
+  border-radius: 50%;
+
+  animation: dashboard-spin 0.8s linear infinite;
+}
+
+@keyframes dashboard-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.grain-dashboard__message {
+  margin: 0;
+
+  padding: 14px;
+
+  border: 0.5px solid #f09595;
+  border-radius: 10px;
+
+  color: #791f1f;
+
+  background: #fcebeb;
+}
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 900px) {
+  .dashboard-overview {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-quick-actions__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 759px) {
+  .grain-dashboard {
+    gap: 18px;
+  }
+
+  .grain-dashboard__header {
+    display: block;
+  }
+
+  .grain-dashboard__header h1 {
+    font-size: 2rem;
+  }
+
+  .grain-dashboard__header-actions {
+    margin-top: 18px;
+
+    width: 100%;
+  }
+
+  .dashboard-header-button {
+    width: 100%;
+  }
+
+  .dashboard-overview {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 10px;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-grid > .dashboard-panel:first-child {
+    grid-column: auto;
+  }
+
+  .dashboard-quick-actions__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* =========================================
+   SMALL PHONES
+========================================= */
+
+@media (max-width: 420px) {
+  .dashboard-card {
+    min-height: 88px;
+
+    padding: 15px;
+  }
+
+  .dashboard-card strong {
+    font-size: 1.2rem;
+  }
+
+  .dashboard-quick-actions {
+    padding: 16px;
+  }
+
+  .dashboard-quick-actions__grid {
+    gap: 8px;
+  }
+
+  .dashboard-quick-actions__grid a {
+    padding: 12px;
+  }
 }
